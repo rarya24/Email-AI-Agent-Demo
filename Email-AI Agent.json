@@ -1,0 +1,181 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -520,
+        -140
+      ],
+      "id": "adfe27c4-2f00-49c4-a9e7-5e1e26d1241f",
+      "name": "When chat message received",
+      "webhookId": "ef23d05c-d811-4f6b-acf5-bc8712b34e9c"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are Ranjana A Personal Assistant who helps her with various tasks.\n\nThe current date and time is {{ $now }}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        -220,
+        -240
+      ],
+      "id": "f8b5981e-ee5d-48bb-ab8f-e5cbf4e0bf5a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -300,
+        40
+      ],
+      "id": "28031246-d0fb-47a3-a88e-2d76f7bb8cfe",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "QkToToA96ppxSa4v",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -160,
+        40
+      ],
+      "id": "95640ced-7c4e-4f4b-b348-5ade58582992",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolSerpApi",
+      "typeVersion": 1,
+      "position": [
+        40,
+        60
+      ],
+      "id": "ed85fa4a-0592-4cad-a2a7-2cdda9a92c5f",
+      "name": "SerpAPI",
+      "credentials": {
+        "serpApi": {
+          "id": "AvTV7IupB1cYmAW5",
+          "name": "SerpAPI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Use this tool to send an email",
+        "sendTo": "={{ $fromAI(\"email\",\"the email address to be sent to\") }}",
+        "subject": "={{ $fromAI(\"subject\",\"the subject of the email\") }}",
+        "emailType": "text",
+        "message": "=Hello!\n\nHope you are well.\n{{ $fromAI(\"message\",\"the content of the email\") }}\n\nBest Regards\nRanjana\n\nSent from an AI",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        200,
+        0
+      ],
+      "id": "375bc0a1-da7a-4cd2-a4a4-60ef2e32e02e",
+      "name": "Send an email",
+      "webhookId": "5608236a-608f-4e3b-a7fb-48274135cb97",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zW9i4NNATzM5jkjV",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an email": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "788debab-6b3a-4d9e-86cf-f3ae2c909c43",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9e2a57c04dbbb91e75aa6635c48846f9a4e6e53ab61eda47f7a6c3a34d214d2e"
+  },
+  "id": "hp9sGLX0dCNQt9zc",
+  "tags": []
+}
